@@ -2,6 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\BlogController;
+use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\LogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +18,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::post('login', [AuthController::class, 'signin']);
+Route::post('register', [AuthController::class, 'signup']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('currentUser', [AuthController::class, 'getCurrentUser']);
+    Route::resource('blogs', BlogController::class);
+    Route::resource('users', UserController::class);
+    Route::post('logout', [AuthController::class, 'logout']);
+    Route::post('addLog', [LogController::class, 'addToLog']);
+    Route::get('logs/{id}', [LogController::class, 'logActivityByUser']);
+    Route::get('logs', [LogController::class, 'logActivity']);
 });
